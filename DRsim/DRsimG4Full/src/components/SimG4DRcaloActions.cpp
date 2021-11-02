@@ -31,6 +31,8 @@ G4VUserActionInitialization* SimG4DRcaloActions::userActionInitialization() {
   actions->setSegmentation(pSeg);
   actions->setBirksConstant(m_scintName,m_birks);
   actions->setThreshold(m_thres);
+  actions->setTrajectoryType(m_trajType);
+  actions->setTrajectoryThres(m_trajThres);
 
   return actions;
 }

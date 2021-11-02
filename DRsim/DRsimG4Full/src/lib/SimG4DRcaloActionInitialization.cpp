@@ -1,6 +1,7 @@
 #include "SimG4DRcaloActionInitialization.h"
 #include "SimG4DRcaloSteppingAction.h"
 #include "SimG4DRcaloEventAction.h"
+#include "SimG4DRcaloTrackingAction.h"
 #include "CLHEP/Units/SystemOfUnits.h"
 
 namespace drc {
@@ -22,6 +23,11 @@ void SimG4DRcaloActionInitialization::Build() const {
   SimG4DRcaloEventAction* eventAction = new SimG4DRcaloEventAction(); // deleted by G4
   eventAction->setSteppingAction(steppingAction);
   SetUserAction(eventAction);
+
+  SimG4DRcaloTrackingAction* trackAction = new SimG4DRcaloTrackingAction();
+  trackAction->SetTrajectoryType(m_trajType);
+  trackAction->SetTrajectoryThres(m_trajThres);
+  SetUserAction(trackAction);
 
   G4Material::GetMaterial(m_scintName)->GetIonisation()->SetBirksConstant(m_birks*CLHEP::millimeter/CLHEP::MeV); // makeshift for DD4hep
 }

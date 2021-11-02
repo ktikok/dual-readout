@@ -5,30 +5,28 @@ from GaudiKernel import SystemOfUnits as units
 from Configurables import k4DataSvc
 dataservice = k4DataSvc("EventDataSvc")
 
-from Configurables import GenAlg, MomentumRangeParticleGun
-pgun = MomentumRangeParticleGun("PGun",
-  PdgCodes=[11], # electron
-  MomentumMin = 20.*units.GeV, # GeV
-  MomentumMax = 20.*units.GeV, # GeV
-  ThetaMin = 1.5335, # rad
-  ThetaMax = 1.5335, # rad
-  PhiMin = 0.01745, # rad
-  PhiMax = 0.01745 # rad
+from Configurables import PythiaInterface
+pythia8Tool = PythiaInterface("PythiaInterface",
+  pythiacard = "PATH_TO_CARD",
+  printPythiaStatistics = True
 )
 
-from Configurables import FlatSmearVertex
-smearTool = FlatSmearVertex("VertexSmearingTool",
-  yVertexMin = -36.42, # mm
-  yVertexMax = -26.42, # mm
-  zVertexMin = -52.135, # mm
-  zVertexMax = -42.135, # mm
-  beamDirection = 0 # 1, 0, -1
+from Configurables import GaussSmearVertex
+smearTool = GaussSmearVertex("VertexSmearingTool",
+  xVertexSigma = 0.5*units.mm,
+  yVertexSigma = 0.5*units.mm,
+  zVertexSigma = 20.0*units.mm,
+  tVertexSigma = 100.0*units.picosecond
 )
 
 from Configurables import HepMCToEDMConverter
 hepmc2edm = HepMCToEDMConverter("Converter")
 
-gen = GenAlg("ParticleGun", SignalProvider=pgun, VertexSmearingTool=smearTool)
+from Configurables import GenAlg
+gen = GenAlg("Pythia8", SignalProvider=pythia8Tool, VertexSmearingTool=smearTool)
+
+from Configurables import GenParticleFilter
+genfilter = GenParticleFilter("GenParticleFilter")
 
 from Configurables import GeoSvc
 geoservice = GeoSvc(
@@ -46,16 +44,26 @@ physicslistTool = SimG4FastSimPhysicsList("Physics", fullphysics=opticalPhysicsT
 from Configurables import SimG4DRcaloActions
 actionTool = SimG4DRcaloActions("SimG4DRcaloActions")
 
+from Configurables import SimG4ConstantMagneticFieldTool
+magnetTool = SimG4ConstantMagneticFieldTool("SimG4ConstantMagneticFieldTool",
+  FieldOn = True,
+  FieldComponentZ = 2.* units.tesla,
+  IntegratorStepper = "ClassicalRK4",
+  MaximumStep = 10000.
+)
+
 # Name of the tool in GAUDI is "XX/YY" where XX is the tool class name and YY is the given name
 geantservice = SimG4Svc("SimG4Svc",
   physicslist = physicslistTool,
   regions = ["SimG4FastSimOpFiberRegion/fastfiber"],
-  actions = actionTool
+  actions = actionTool,
+  magneticField = magnetTool
 )
 
 from Configurables import SimG4Alg, SimG4PrimariesFromEdmTool
 # next, create the G4 algorithm, giving the list of names of tools ("XX/YY")
 edmConverter = SimG4PrimariesFromEdmTool("EdmConverter")
+edmConverter.GenParticles.Path = "GenParticlesFiltered"
 
 from Configurables import SimG4SaveDRcaloHits, SimG4SaveDRcaloMCTruth, SimG4SaveDRcaloTrajectory
 saveDRcaloTool = SimG4SaveDRcaloHits("saveDRcaloTool", readoutNames = ["DRcaloSiPMreadout"])
@@ -88,7 +96,7 @@ rndmGenSvc = RndmGenSvc("RndmGenSvc",
 )
 
 ApplicationMgr(
-  TopAlg = [gen, hepmc2edm, geantsim, podiooutput],
+  TopAlg = [gen, hepmc2edm, genfilter, geantsim, podiooutput],
   EvtSel = 'NONE',
   EvtMax = 10,
   # order is important, as GeoSvc is needed by SimG4Svc

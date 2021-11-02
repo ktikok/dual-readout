@@ -15,7 +15,9 @@ podioinput = PodioInput("PodioInput",
     "Sim3dCalorimeterHits",
     "RawWavlenStructs",
     "GenParticles",
-    "Leakages"
+    "Leakages",
+    "SimTrajectoryHits",
+    "SimTrajectoryParticles"
   ]
 )
 

@@ -16,12 +16,16 @@ public:
   void setSegmentation(dd4hep::DDSegmentation::GridDRcalo* seg) { pSeg = seg; }
   void setThreshold(const double thres) { m_thres = thres; }
   void setBirksConstant(const std::string scintName, const double birks);
+  void setTrajectoryType(const int trajType) { m_trajType = trajType; }
+  void setTrajectoryThres(const double thres) { m_trajThres = thres; }
 
 private:
   dd4hep::DDSegmentation::GridDRcalo* pSeg;
   std::string m_scintName;
   double m_birks;
   double m_thres;
+  int m_trajType;
+  double m_trajThres;
 };
 }
 

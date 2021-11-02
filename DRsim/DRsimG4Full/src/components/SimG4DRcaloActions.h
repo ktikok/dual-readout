@@ -33,6 +33,8 @@ private:
   Gaudi::Property<std::string> m_scintName{this, "scintName", "DR_Polystyrene", "Name of the scintillators"};
   Gaudi::Property<double> m_birks{this, "birks", 0.126, "Birk's constant for the scintillators in mm/MeV"};
   Gaudi::Property<double> m_thres{this, "thres", 0.0001, "Energy threshold to store 3d SimCalorimeterHits in GeV"};
+  Gaudi::Property<int> m_trajType{this, "trajType", 2, "G4Trajectory type to store"};
+  Gaudi::Property<double> m_trajThres{this, "trajThres", 10., "Minimum kinetic energy of trajectories in MeV"};
 };
 
 #endif

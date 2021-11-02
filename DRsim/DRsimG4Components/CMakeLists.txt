@@ -34,4 +34,8 @@ install(TARGETS DRsimG4Components EXPORT SimTargets
 file(GLOB scripts ${PROJECT_SOURCE_DIR}/test/*.py)
 file(COPY ${scripts} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/test)
 
+file(GLOB cards ${PROJECT_SOURCE_DIR}/test/*.cmnd)
+file(COPY ${cards} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/test)
+
 install(FILES ${scripts} DESTINATION test)
+install(FILES ${cards} DESTINATION test)
