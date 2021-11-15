@@ -53,6 +53,7 @@ private:
 
   Gaudi::Property<double> m_scintScale{this, "scintScale", 1.232, "Scintillation longitudinal scale"};
   Gaudi::Property<double> m_cherenScale{this, "cherenScale", 1.125, "Cherenkov longitudinal scale"};
+  Gaudi::Property<double> m_buffer{this, "bufferLength", 500., "allowed buffer length outside the tower in mm"};
 };
 
 #endif

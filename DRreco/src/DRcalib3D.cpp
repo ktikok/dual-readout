@@ -90,6 +90,7 @@ StatusCode DRcalib3D::execute() {
     auto fiberUnit = fiberDir.Unit();
 
     double towerH = pParamBase->GetTowerH();
+    double allowed = towerH + m_buffer.value()*dd4hep::millimeter;
     double scale = pSeg->IsCerenkov(cID) ? m_cherenScale.value() : m_scintScale.value();
 
     // create a histogram to do FFT and fill it
@@ -126,7 +127,12 @@ StatusCode DRcalib3D::execute() {
         double energy = hit2d.getEnergy()*con/amplitude;
         double timeBin = cen*dd4hep::nanosecond;
         double numerator = timeBin - std::sqrt(sipmPos.Mag2())/dd4hep::c_light;
-        dd4hep::Position pos = sipmPos + ( (scale-1.)*towerH - scale*( numerator/invVminusInvC ) )*fiberUnit;
+        dd4hep::Position propagation = ( scale*( numerator/invVminusInvC ) - (scale-1.)*towerH )*fiberUnit;
+
+        if ( propagation.Mag2() > allowed*allowed )
+          continue;
+
+        dd4hep::Position pos = sipmPos - propagation;
         edm4hep::Vector3f posEdm(pos.x() * CLHEP::millimeter/dd4hep::millimeter,
                                  pos.y() * CLHEP::millimeter/dd4hep::millimeter,
                                  pos.z() * CLHEP::millimeter/dd4hep::millimeter);
