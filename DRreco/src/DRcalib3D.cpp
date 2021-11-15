@@ -129,7 +129,7 @@ StatusCode DRcalib3D::execute() {
         double numerator = timeBin - std::sqrt(sipmPos.Mag2())/dd4hep::c_light;
         dd4hep::Position propagation = ( scale*( numerator/invVminusInvC ) - (scale-1.)*towerH )*fiberUnit;
 
-        if ( propagation.Mag2() > allowed*allowed )
+        if ( m_dropBuffer.value() && propagation.Mag2() > allowed*allowed )
           continue;
 
         dd4hep::Position pos = sipmPos - propagation;
