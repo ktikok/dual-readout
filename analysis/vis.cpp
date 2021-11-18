@@ -62,7 +62,7 @@ int main(int , char const *argv[]) {
 
   float en_S = 0.; float en_C = 0.;
   for (unsigned int idx = 0; idx < caloHits.size(); idx++) {
-    auto& caloHit = caloHits.at(idx);
+    const auto& caloHit = caloHits.at(idx);
 
     int type = caloHit.getType();
     float en = caloHit.getEnergy();
@@ -78,7 +78,7 @@ int main(int , char const *argv[]) {
   TNtuple* tuple3d_traj = new TNtuple("ntuple_traj","Traj 3D","x:y:z:charge:PDG:x0:y0:z0:px:py:pz");
 
   for (unsigned int idx = 0; idx < calo3dHits.size(); idx++) { // 3d hits have different size
-    auto& calo3dHit = calo3dHits.at(idx);
+    const auto& calo3dHit = calo3dHits.at(idx);
     int type = calo3dHit.getType();
     float en = calo3dHit.getEnergy();
     auto& pos = calo3dHit.getPosition();
@@ -87,7 +87,7 @@ int main(int , char const *argv[]) {
   }
 
   for (unsigned int idx = 0; idx < sim3dHits.size(); idx++) {
-    auto& sim3dHit = sim3dHits.at(idx);
+    const auto& sim3dHit = sim3dHits.at(idx);
     float en = sim3dHit.getEnergy();
     auto& pos = sim3dHit.getPosition();
 
@@ -95,7 +95,7 @@ int main(int , char const *argv[]) {
   }
 
   for (unsigned int idx = 0; idx < trajHits.size(); idx++) {
-    auto& trajHit = trajHits.at(idx);
+    const auto& trajHit = trajHits.at(idx);
     auto& pos = trajHit.getPosition();
     auto& ptc = trajHit.getMCParticle();
     auto& vtx = ptc.getVertex();
